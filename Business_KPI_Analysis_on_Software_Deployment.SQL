@@ -2,7 +2,7 @@ SELECT
 
 CASE
 
-# Slicing Traffic into Equal Slices for A/B testing
+''' Slicing Traffic into Equal Slices for A/B testing '''
 WHEN SUBSTR(slicer, 3, 1) IN ("1") THEN "Test1"
 WHEN SUBSTR(slicer, 3, 1) IN ("6") THEN "cs6"
 WHEN SUBSTR(slicer, 3, 1) IN ("8") THEN "cs8"
@@ -17,7 +17,7 @@ ELSE "other-tests"
 
 END slice,
 
-# Pulling Metrics to Calculate KPIs
+''' Pulling Metrics to Calculate KPIs '''
 null ad_requests,
 SUM(CASE WHEN event_type='filled' THEN 1 END) filled_ad_requests,
 SUM(CASE WHEN event_type="start" THEN 1 END) all_impressions,
