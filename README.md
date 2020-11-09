@@ -1,6 +1,6 @@
 # SQL Questions
 
-The following examples are SQL code that I wrote to answer each respective prompt. Variations in SQL code can occur due to different database systems.
+The following examples are SQL code that I wrote to answer each respective prompt. Variations in SQL code can occur due to different database systems. Additionally, any documents in this folder are also there to serve as examples of SQL code.
 
 ## Amazon Prime Video
 
