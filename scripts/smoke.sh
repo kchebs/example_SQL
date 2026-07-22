@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-# Run multi-domain SQL smoke assertions (sports, ecommerce, healthcare).
+# Run multi-domain SQL smoke assertions (data-quality, sports, ecommerce, healthcare).
 # Prefers Docker Compose when a daemon is available; otherwise uses local psql/Postgres.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 SMOKE_FILES=(
+  tests/data_quality_smoke.sql
   tests/sports_smoke.sql
   tests/ecommerce_smoke.sql
   tests/healthcare_smoke.sql
@@ -32,7 +33,7 @@ if docker info >/dev/null 2>&1; then
     echo "Using Docker Compose..."
     "${COMPOSE[@]}" up -d --wait
     run_smoke_files "${COMPOSE[@]}" exec -T db psql -U example -d example_sql -v ON_ERROR_STOP=1 -f -
-    echo "example_SQL docker smoke passed (sports + ecommerce + healthcare)"
+    echo "example_SQL docker smoke passed (data-quality + sports + ecommerce + healthcare)"
     exit 0
   fi
 fi
@@ -62,4 +63,4 @@ for f in "${SMOKE_FILES[@]}"; do
   echo "Running $f ..."
   psql "$DB_URL" -v ON_ERROR_STOP=1 -f "$f"
 done
-echo "example_SQL local Postgres smoke passed (sports + ecommerce + healthcare)"
+echo "example_SQL local Postgres smoke passed (data-quality + sports + ecommerce + healthcare)"
