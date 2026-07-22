@@ -1,0 +1,7 @@
+status
+healthcare_smoke OK
+
+# Expected core assertions (as-of 2019-01-01):
+# - Accounts created in prior year = 4
+# - Eligible PCAH registration rate = 0.75
+# - Median account→registration latency (2018) = 16 days
