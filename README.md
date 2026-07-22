@@ -39,6 +39,10 @@ flowchart LR
 ```
 example_SQL/
 ├── README.md
+├── docker-compose.yml
+├── docker/init/          # Postgres schema + seed
+├── scripts/smoke.sh
+├── tests/sports_smoke.sql
 ├── sql/
 │   ├── Business_KPI_Analysis_on_Software_Deployment.SQL
 │   ├── Rows_to_Columns_Window_Functions.SQL
@@ -62,7 +66,24 @@ example_SQL/
 
 ## Installation / usage
 
-No runtime install is required. Open any file under [`sql/`](sql/) in your SQL client or review in an editor.
+Open any file under [`sql/`](sql/) in your SQL client, or run the **Postgres docker smoke** (sports league Q1–Q3 with assertions):
+
+```bash
+chmod +x scripts/smoke.sh
+./scripts/smoke.sh
+# equivalent:
+# docker compose up -d --wait
+# docker compose exec -T db psql -U example -d example_sql -v ON_ERROR_STOP=1 -f - < tests/sports_smoke.sql
+```
+
+Requires Docker **or** a local Postgres. Prefer Docker when available:
+
+```bash
+docker compose up -d --wait
+docker compose exec -T db ...
+```
+
+If Docker is unavailable, `scripts/smoke.sh` falls back to local `psql` (e.g. `brew install postgresql@16`) and loads `docker/init/*.sql` before assertions.
 
 Long-form prompt walkthroughs:
 
@@ -95,9 +116,9 @@ Queries return scalar KPIs or small result sets (country rankings, monthly avera
 
 ## Future improvements
 
-- Add a `docker-compose` Postgres with seed CSVs and runnable assertions
+- Extend docker seeds/assertions beyond sports league (ecommerce, healthcare)
 - Provide dialect variants (Postgres / BigQuery / Snowflake) side by side
-- Add a short `tests/` folder with `sqlfluff` linting
+- Add `sqlfluff` linting in CI
 
 ## License
 
