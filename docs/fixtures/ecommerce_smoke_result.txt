@@ -1,0 +1,6 @@
+status
+ecommerce_smoke OK
+
+# Expected core assertions (from docker/init seeds):
+# - NYC Meal Kit items on 2022-06-15 = 4 (upsell excluded)
+# - Credit-billing cash refund for order 100 = 12.50
