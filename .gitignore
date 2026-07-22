@@ -1,0 +1,15 @@
+.DS_Store
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+.env
+.env.*
+rent_invoices.csv
+visitors_202001.csv
+fitness_conversion_sample_data.csv
+**/.env
+!.env.example
+!**/.env.example
+rough_drafts/
+**/rough_drafts/
+bin/
