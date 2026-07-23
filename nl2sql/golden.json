@@ -21,7 +21,7 @@
     "id": "ecom_cash_refund",
     "domain": "ecommerce",
     "question": "What is the total cash refund amount?",
-    "expected_sql_contains": ["fact_refund", "dim_refund_type", "cash"]
+    "expected_sql_contains": ["fact_refund", "dim_refund_type", "Cash Refund"]
   },
   {
     "id": "ecom_meal_kit_lines",

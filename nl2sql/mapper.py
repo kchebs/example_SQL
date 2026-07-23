@@ -77,7 +77,7 @@ WHERE telehealth_eligible = TRUE
 SELECT SUM(r.total_refund) AS cash_refund_total
 FROM fact_refund r
 JOIN dim_refund_type rt ON rt.refund_type_id = r.refund_type_id
-WHERE rt.refund_type_label = 'cash'
+WHERE rt.refund_type_label = 'Cash Refund'
 """.strip(),
     ),
     (
@@ -112,7 +112,7 @@ ORDER BY 1
         """
 SELECT COUNT(*) AS shipped_orders
 FROM fact_order
-WHERE statuscode = 1
+WHERE statuscode = 150
 """.strip(),
     ),
     (
