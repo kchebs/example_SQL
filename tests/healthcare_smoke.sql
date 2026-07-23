@@ -21,13 +21,13 @@ DECLARE
   rate NUMERIC;
 BEGIN
   SELECT
-    SUM(CASE WHEN g.pcah_reg_date IS NOT NULL THEN 1 ELSE 0 END)::NUMERIC
-    / NULLIF(SUM(CASE WHEN a.pcah_eligible THEN 1 ELSE 0 END), 0)
+    SUM(CASE WHEN g.telehealth_reg_date IS NOT NULL THEN 1 ELSE 0 END)::NUMERIC
+    / NULLIF(SUM(CASE WHEN a.telehealth_eligible THEN 1 ELSE 0 END), 0)
   INTO rate
   FROM accounts a
-  LEFT JOIN pcah_reg g ON a.account_id = g.account_id;
+  LEFT JOIN telehealth_reg g ON a.account_id = g.account_id;
   IF rate IS DISTINCT FROM 0.75 THEN
-    RAISE EXCEPTION 'pcah rate expected 0.75 got %', rate;
+    RAISE EXCEPTION 'telehealth rate expected 0.75 got %', rate;
   END IF;
 END $$;
 
@@ -37,11 +37,11 @@ DECLARE
   med NUMERIC;
 BEGIN
   SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (
-    ORDER BY (g.pcah_reg_date - a.account_created_date)
+    ORDER BY (g.telehealth_reg_date - a.account_created_date)
   ) INTO med
   FROM accounts a
-  JOIN pcah_reg g ON a.account_id = g.account_id
-  WHERE EXTRACT(YEAR FROM g.pcah_reg_date) = 2018;
+  JOIN telehealth_reg g ON a.account_id = g.account_id
+  WHERE EXTRACT(YEAR FROM g.telehealth_reg_date) = 2018;
   IF med IS DISTINCT FROM 16 THEN
     RAISE EXCEPTION 'median latency expected 16 got %', med;
   END IF;

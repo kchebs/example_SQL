@@ -109,7 +109,7 @@ HAVING SUM(minutes_streamed) > median
 ## Healthcare Technology Company SQL analytics
 
 ### Question 1.
-PCAH (GP at hand) is one of our key services. Not everyone in the UK is eligible for it, and patients have to sign up for it after they’ve created a Healthcare Technology Company account. Assume you have these two tables: accounts and pcah_reg.
+Telehealth (telehealth service) is one of our key services. Not everyone in the UK is eligible for it, and patients have to sign up for it after they’ve created a Healthcare Technology Company account. Assume you have these two tables: accounts and telehealth_reg.
 
 ### a) How many patients have created an account with Healthcare Technology Company in the last year?
 
@@ -117,29 +117,29 @@ Assuming the account_id is a primary key for the accounts table, the SQL query i
 
 SELECT COUNT(*) FROM accounts WHERE account_created_date >= DATEADD(year,-1,GETDATE())
 
-### b) For the users who are eligible for pcah, what proportion of them actually register for it?
+### b) For the users who are eligible for telehealth, what proportion of them actually register for it?
 
-SELECT SUM(CASE WHEN pcah_reg_date IS NOT NULL THEN 1 ELSE 0 END)/ SUM(CASE WHEN pcah_eligible IS TRUE THEN 1 ELSE 0 END) prp_reg_oo_elig  
+SELECT SUM(CASE WHEN telehealth_reg_date IS NOT NULL THEN 1 ELSE 0 END)/ SUM(CASE WHEN telehealth_eligible IS TRUE THEN 1 ELSE 0 END) prp_reg_oo_elig  
 FROM accounts a  
-LEFT JOIN pcah_reg g ON a.account_id = g.account_id  
+LEFT JOIN telehealth_reg g ON a.account_id = g.account_id  
 
-### c) Over 2018, how has the registration rate to PCAH changed (by month)?
+### c) Over 2018, how has the registration rate to Telehealth changed (by month)?
 
 SELECT date_trunc(‘month’, account_created_date) as date,  
-SUM(CASE WHEN pcah_eligible = True and pcah_reg_date IS NOT NULL then 1 else 0 END)/SUM(CASE WHEN pcah_eligible = True then 1 else 0 END) as months_rate,  
-100 * (SUM(CASE WHEN pcah_eligible = True and pcah_reg_date IS NOT NULL then 1 else 0 END)/SUM(CASE WHEN pcah_eligible = True then 1 else 0 END) - lag(SUM(CASE WHEN pcah_eligible = True and pcah_reg_date IS NOT NULL then 1 else 0 END)/SUM(CASE WHEN pcah_eligible = True then 1 else 0 END), 1) over (order by account_created_date)) / lag(SUM(CASE WHEN pcah_eligible = True and pcah_reg_date IS NOT NULL then 1 else 0 END)/SUM(CASE WHEN pcah_eligible = True then 1 else 0 END), 1) over (order by account_created_date)) || '%' as MoM_change  
+SUM(CASE WHEN telehealth_eligible = True and telehealth_reg_date IS NOT NULL then 1 else 0 END)/SUM(CASE WHEN telehealth_eligible = True then 1 else 0 END) as months_rate,  
+100 * (SUM(CASE WHEN telehealth_eligible = True and telehealth_reg_date IS NOT NULL then 1 else 0 END)/SUM(CASE WHEN telehealth_eligible = True then 1 else 0 END) - lag(SUM(CASE WHEN telehealth_eligible = True and telehealth_reg_date IS NOT NULL then 1 else 0 END)/SUM(CASE WHEN telehealth_eligible = True then 1 else 0 END), 1) over (order by account_created_date)) / lag(SUM(CASE WHEN telehealth_eligible = True and telehealth_reg_date IS NOT NULL then 1 else 0 END)/SUM(CASE WHEN telehealth_eligible = True then 1 else 0 END), 1) over (order by account_created_date)) || '%' as MoM_change  
 FROM accounts ac  
-LEFT JOIN pcah_reg gr ON ac.account_id = gr.account_id  
+LEFT JOIN telehealth_reg gr ON ac.account_id = gr.account_id  
 WHERE date_part(‘year’, account_created_date) = 2018  
 GROUP BY date_trunc(‘month’, account_created_date)  
 ORDER BY date_trunc(‘month’, account_created_date) ASC  
 
-### d) Where patients signed up for PCAH in 2018, what is the median latency between them creating a healthcare technology company account, and when they completed a registration for pcah?
+### d) Where patients signed up for Telehealth in 2018, what is the median latency between them creating a healthcare technology company account, and when they completed a registration for telehealth?
 
-SELECT PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY (DATEDIFF(day, account_created_date, pcah_reg_date)) AS median_latency  
+SELECT PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY (DATEDIFF(day, account_created_date, telehealth_reg_date)) AS median_latency  
 FROM accounts ac  
-LEFT JOIN pcah_reg gr ON ac.account_id = gr.account_id  
-WHERE date_part(‘year’, pcah_reg_date) = 2018  
+LEFT JOIN telehealth_reg gr ON ac.account_id = gr.account_id  
+WHERE date_part(‘year’, telehealth_reg_date) = 2018  
 
 ### e) Why would I ask for the median latency rather than the mean latency?
 

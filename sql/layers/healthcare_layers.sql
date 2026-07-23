@@ -7,31 +7,31 @@
 SELECT
   account_id,
   account_created_date,
-  pcah_eligible
+  telehealth_eligible
 FROM accounts;
 
--- stg_pcah_reg
+-- stg_telehealth_reg
 SELECT
   account_id,
-  pcah_reg_date
-FROM pcah_reg;
+  telehealth_reg_date
+FROM telehealth_reg;
 
 -- intermediate: eligible accounts with optional registration + latency
 -- int_eligible_registrations
 SELECT
   a.account_id,
   a.account_created_date,
-  a.pcah_eligible,
-  g.pcah_reg_date,
+  a.telehealth_eligible,
+  g.telehealth_reg_date,
   CASE
-    WHEN g.pcah_reg_date IS NOT NULL
-    THEN (g.pcah_reg_date - a.account_created_date)
+    WHEN g.telehealth_reg_date IS NOT NULL
+    THEN (g.telehealth_reg_date - a.account_created_date)
   END AS latency_days
 FROM accounts a
-LEFT JOIN pcah_reg g ON a.account_id = g.account_id;
+LEFT JOIN telehealth_reg g ON a.account_id = g.account_id;
 
--- mart: PCAH funnel KPIs as of 2019-01-01
--- mart_pcah_funnel
+-- mart: Telehealth funnel KPIs as of 2019-01-01
+-- mart_telehealth_funnel
 SELECT
   (
     SELECT COUNT(*)
@@ -40,16 +40,16 @@ SELECT
   ) AS accounts_created_prior_year,
   (
     SELECT
-      SUM(CASE WHEN g.pcah_reg_date IS NOT NULL THEN 1 ELSE 0 END)::NUMERIC
-      / NULLIF(SUM(CASE WHEN a.pcah_eligible THEN 1 ELSE 0 END), 0)
+      SUM(CASE WHEN g.telehealth_reg_date IS NOT NULL THEN 1 ELSE 0 END)::NUMERIC
+      / NULLIF(SUM(CASE WHEN a.telehealth_eligible THEN 1 ELSE 0 END), 0)
     FROM accounts a
-    LEFT JOIN pcah_reg g ON a.account_id = g.account_id
+    LEFT JOIN telehealth_reg g ON a.account_id = g.account_id
   ) AS eligible_registration_rate,
   (
     SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (
-      ORDER BY (g.pcah_reg_date - a.account_created_date)
+      ORDER BY (g.telehealth_reg_date - a.account_created_date)
     )
     FROM accounts a
-    JOIN pcah_reg g ON a.account_id = g.account_id
-    WHERE EXTRACT(YEAR FROM g.pcah_reg_date) = 2018
+    JOIN telehealth_reg g ON a.account_id = g.account_id
+    WHERE EXTRACT(YEAR FROM g.telehealth_reg_date) = 2018
   ) AS median_latency_days_2018;

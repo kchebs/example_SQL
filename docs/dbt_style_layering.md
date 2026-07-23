@@ -7,12 +7,12 @@ flowchart TB
   subgraph sources [Sources / seed]
     S1[sports Person Sport History]
     S2[ecommerce dims + facts]
-    S3[healthcare accounts pcah_reg]
+    S3[healthcare accounts telehealth_reg]
   end
   subgraph staging [Staging]
     St1[stg_person / stg_sport / stg_history]
     St2[stg_orders / stg_order_lines / stg_refunds]
-    St3[stg_accounts / stg_pcah_reg]
+    St3[stg_accounts / stg_telehealth_reg]
   end
   subgraph intermediate [Intermediate]
     I1[int_person_sport_year]
@@ -22,7 +22,7 @@ flowchart TB
   subgraph marts [Marts]
     M1[mart_multi_sport_2010 / mart_sport_play_counts]
     M2[mart_items_sold_by_store_day / mart_cash_refunds]
-    M3[mart_pcah_funnel]
+    M3[mart_telehealth_funnel]
   end
   sources --> staging --> intermediate --> marts
   marts --> Smoke[Smoke + data-quality assertions]
@@ -65,8 +65,8 @@ Illustrative SQL: [`sql/layers/ecommerce_layers.sql`](../sql/layers/ecommerce_la
 
 | Layer | Conceptual model | Grain | Built from |
 |-------|------------------|-------|------------|
-| Source | `accounts`, `pcah_reg` | as seeded | `05`/`06` init scripts |
-| Staging | `stg_accounts`, `stg_pcah_reg` | account / registration | dates as `DATE` |
+| Source | `accounts`, `telehealth_reg` | as seeded | `05`/`06` init scripts |
+| Staging | `stg_accounts`, `stg_telehealth_reg` | account / registration | dates as `DATE` |
 | Intermediate | eligible accounts left-joined to registration; latency days | account | eligibility + reg |
 | Mart | prior-year account count; eligible reg rate; median latency | cohort / scalar KPI | `tests/healthcare_smoke.sql` (as-of `2019-01-01`) |
 
@@ -79,7 +79,7 @@ Illustrative SQL: [`sql/layers/healthcare_layers.sql`](../sql/layers/healthcare_
 | dbt-style test | What smoke checks |
 |----------------|-------------------|
 | `unique` + `not_null` on PK | No duplicate / null keys on Person, Sport, dims, facts, accounts |
-| `relationships` | History → Person/Sport; order lines/refunds → orders; pcah_reg → accounts |
+| `relationships` | History → Person/Sport; order lines/refunds → orders; telehealth_reg → accounts |
 | `accepted_values` | Product types, refund types, line status codes |
 | Expression | Refunds ≥ 0; registration date ≥ account created date; History.Score ≥ 0 |
 

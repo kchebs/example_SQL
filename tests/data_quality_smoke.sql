@@ -139,32 +139,32 @@ BEGIN
     RAISE EXCEPTION 'DQ accounts PK/not_null failed';
   END IF;
 
-  SELECT COUNT(*) - COUNT(DISTINCT account_id) INTO n FROM pcah_reg;
-  IF n <> 0 THEN RAISE EXCEPTION 'DQ pcah_reg unique failed'; END IF;
+  SELECT COUNT(*) - COUNT(DISTINCT account_id) INTO n FROM telehealth_reg;
+  IF n <> 0 THEN RAISE EXCEPTION 'DQ telehealth_reg unique failed'; END IF;
 
-  -- relationships: pcah_reg → accounts
+  -- relationships: telehealth_reg → accounts
   IF EXISTS (
-    SELECT 1 FROM pcah_reg g
+    SELECT 1 FROM telehealth_reg g
     LEFT JOIN accounts a ON g.account_id = a.account_id
     WHERE a.account_id IS NULL
   ) THEN
-    RAISE EXCEPTION 'DQ pcah_reg orphan account_id';
+    RAISE EXCEPTION 'DQ telehealth_reg orphan account_id';
   END IF;
 
   -- expression: registration on or after account creation
   IF EXISTS (
     SELECT 1
-    FROM pcah_reg g
+    FROM telehealth_reg g
     JOIN accounts a ON g.account_id = a.account_id
-    WHERE g.pcah_reg_date < a.account_created_date
+    WHERE g.telehealth_reg_date < a.account_created_date
   ) THEN
-    RAISE EXCEPTION 'DQ pcah_reg_date before account_created_date';
+    RAISE EXCEPTION 'DQ telehealth_reg_date before account_created_date';
   END IF;
 
   SELECT COUNT(*) INTO n FROM accounts;
   IF n < 5 THEN RAISE EXCEPTION 'DQ accounts row count %', n; END IF;
-  SELECT COUNT(*) INTO n FROM pcah_reg;
-  IF n < 3 THEN RAISE EXCEPTION 'DQ pcah_reg row count %', n; END IF;
+  SELECT COUNT(*) INTO n FROM telehealth_reg;
+  IF n < 3 THEN RAISE EXCEPTION 'DQ telehealth_reg row count %', n; END IF;
 END $$;
 
 SELECT 'data_quality_smoke OK' AS status;
