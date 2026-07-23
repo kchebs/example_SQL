@@ -1,0 +1,50 @@
+[
+  {
+    "id": "hc_eligible_reg_rate",
+    "domain": "healthcare",
+    "question": "What is the eligible telehealth registration rate for accounts created before 2019?",
+    "expected_sql_contains": ["accounts", "telehealth_reg", "telehealth_eligible"]
+  },
+  {
+    "id": "hc_median_latency",
+    "domain": "healthcare",
+    "question": "What is the median latency from account creation to telehealth registration?",
+    "expected_sql_contains": ["PERCENTILE_CONT", "telehealth_reg_date", "account_created_date"]
+  },
+  {
+    "id": "hc_prior_year_accounts",
+    "domain": "healthcare",
+    "question": "How many accounts were created in the prior year before 2019?",
+    "expected_sql_contains": ["accounts", "account_created_date", "2018"]
+  },
+  {
+    "id": "ecom_cash_refund",
+    "domain": "ecommerce",
+    "question": "What is the total cash refund amount?",
+    "expected_sql_contains": ["fact_refund", "dim_refund_type", "cash"]
+  },
+  {
+    "id": "ecom_meal_kit_lines",
+    "domain": "ecommerce",
+    "question": "How many meal kit order lines shipped on 2022-06-15?",
+    "expected_sql_contains": ["fact_order_line", "dim_product_type", "meal"]
+  },
+  {
+    "id": "ecom_monthly_orders",
+    "domain": "ecommerce",
+    "question": "Show monthly order counts by ship date",
+    "expected_sql_contains": ["fact_order", "DATE_TRUNC", "datetime_shipped"]
+  },
+  {
+    "id": "sports_multi_sport",
+    "domain": "sports",
+    "question": "Which people participate in multi sport activities?",
+    "expected_sql_contains": ["Person", "History", "SportID"]
+  },
+  {
+    "id": "sports_avg_score",
+    "domain": "sports",
+    "question": "What is the average score by sport?",
+    "expected_sql_contains": ["AVG", "History", "Sport"]
+  }
+]

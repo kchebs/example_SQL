@@ -13,3 +13,5 @@ fitness_conversion_sample_data.csv
 rough_drafts/
 **/rough_drafts/
 bin/
+artifacts/
+.venv/

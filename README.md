@@ -1,6 +1,6 @@
-# SQL Analytics Examples
+# SQL Analytics Platform
 
-Personal collection of SQL problem-solving for analytics work: window functions, funnel metrics, KPI reporting, healthcare scheduling, ecommerce orders, and mobile-game marketing metrics.
+SQL Analytics Platform: SQL problem-solving for analytics work — window functions, funnel metrics, KPI reporting, healthcare scheduling, ecommerce orders, and mobile-game marketing metrics.
 
 Company names in prompts are **genericized**. Query logic and schemas are preserved.
 
@@ -44,11 +44,13 @@ flowchart LR
 ## Repository layout
 
 ```
-example_SQL/
+sql-analytics-platform/
 ├── README.md
 ├── docker-compose.yml
 ├── docker/init/          # sports + ecommerce + healthcare schema/seed
+├── nl2sql/               # offline-first NL → SQL mapper + golden eval
 ├── scripts/smoke.sh
+├── scripts/run_nl2sql_eval.py
 ├── tests/
 │   ├── data_quality_smoke.sql
 │   ├── sports_smoke.sql
@@ -61,6 +63,23 @@ example_SQL/
     └── dbt_style_layering.md
 ```
 
+## NL2SQL
+
+Offline-first natural-language → SQL for the Docker-seeded domains (healthcare telehealth, ecommerce, sports).
+
+- **Mapper** (`nl2sql/mapper.py`): deterministic keyword/template mapping — no API keys.
+- **Golden eval** (`nl2sql/eval.py` + `nl2sql/golden.json`): maps questions, checks expected SQL fragments, and executes against Postgres when available; otherwise structural checks only (always passable offline).
+- **Artifact**: `artifacts/nl2sql_eval.json` (gitignored).
+- Optional `NL2SQL_PROVIDER` stub in `nl2sql/llm_provider.py` raises `skipped_no_key` without breaking the default path.
+
+```bash
+# Prefer repo venv if present
+python3 scripts/run_nl2sql_eval.py
+# or via full smoke (SQL assertions, then NL2SQL)
+./scripts/smoke.sh
+```
+
+Demo DB URL (example password only): `postgresql://example:example@127.0.0.1:5432/example_sql`
 ## dbt project
 
 Minimal executable dbt models for the telehealth registration funnel live in [`dbt_project/`](dbt_project/) (Postgres profile + staging/marts).
@@ -126,6 +145,16 @@ Full fixture files: [`docs/fixtures/`](docs/fixtures/).
 - Smoke tests use Postgres-native date math; portfolio `.sql` files may show warehouse dialects (`DATEADD`, `GETDATE()`) with equivalents noted.
 - Docs may reference older wording; treat `sql/` as source of truth for query logic.
 - `sql/layers/` is reference SQL for staging/intermediate/mart shapes; Docker init seeds remain the executable source.
+- NL2SQL defaults to a deterministic mapper so CI/smoke never requires LLM credentials.
+
+## Future improvements
+
+- Expand golden set and add negative cases (unmappable questions).
+- Wire optional LLM providers behind `NL2SQL_PROVIDER` with keyed skip vs fail modes.
+- Schema-aware retrieval (table/column cards) before generation.
+- Compare mapper vs LLM outputs on the same goldens; track exact-match and execution-match rates.
+- Promote `sql/layers/` into runnable dbt models beyond the telehealth subset.
+- Add more domains (streaming, mobile marketing) to Docker seeds + smoke + NL2SQL templates.
 
 ## License
 

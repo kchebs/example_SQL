@@ -5,7 +5,7 @@ Executable dbt models over the same Docker Postgres seed used by `scripts/smoke.
 ## Setup
 
 ```bash
-# from example_SQL root — start Postgres
+# from sql-analytics-platform root — start Postgres
 docker compose up -d
 
 pip install dbt-postgres
