@@ -1,0 +1,13 @@
+# Copy to ~/.dbt/profiles.yml or set DBT_PROFILES_DIR to this directory for local runs.
+example_sql:
+  target: docker
+  outputs:
+    docker:
+      type: postgres
+      host: 127.0.0.1
+      user: example
+      password: example
+      port: 5432
+      dbname: example_sql
+      schema: public
+      threads: 2

@@ -1,3 +1,7 @@
+# dbt layering
+
+A minimal executable dbt project lives in [`dbt_project/`](../dbt_project/).
+
 # dbt-style layering (conceptual)
 
 This repo is plain SQL + Postgres seeds—not a dbt project. The smoke domains still follow the same **layer contract** analytics engineers use in dbt: raw sources stay untouched, staging cleans them, intermediate models encode joins/business rules, and marts expose metrics that tests assert.

@@ -1,0 +1,14 @@
+name: example_sql
+version: 1.0.0
+config-version: 2
+profile: example_sql
+model-paths: ["models"]
+test-paths: ["tests"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+models:
+  example_sql:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table

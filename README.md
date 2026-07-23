@@ -61,6 +61,10 @@ example_SQL/
     └── dbt_style_layering.md
 ```
 
+## dbt project
+
+Minimal executable dbt models for the telehealth registration funnel live in [`dbt_project/`](dbt_project/) (Postgres profile + staging/marts).
+
 ## Technologies
 
 - SQL (ANSI-style; warehouse dialects noted in comments)
